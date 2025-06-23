@@ -13,6 +13,9 @@ with cte_customer as (
     from {{ ref('policy_events') }}
     group by 1
 )
+/*
+    FOR EACH CUSTOMER, TAKE THE LATEST STATE THAT THEY CARRIED OUT ACTIVITY
+*/
 , cte_customer_latest_location as(
     select
         *

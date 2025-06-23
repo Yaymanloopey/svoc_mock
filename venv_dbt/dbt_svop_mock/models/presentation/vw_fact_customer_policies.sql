@@ -23,7 +23,7 @@ with cte_customer_policies as (
         , min(case when lower(event_type) = 'bind' then event_date end) first_bind_date
         , min(case when lower(event_type) = 'cancel' then event_date end) first_cancel_date
         /*
-            determining time between events
+            determining time between specified events
         */
         , date_diff(min(case when lower(event_type) = 'bind' then event_date end), min(case when lower(event_type) = 'quote' then event_date end), DAY) quote_to_bind_days
         , date_diff(min(case when lower(event_type) = 'cancel' then event_date end), min(case when lower(event_type) = 'bind' then event_date end), DAY) bind_to_cancel_days

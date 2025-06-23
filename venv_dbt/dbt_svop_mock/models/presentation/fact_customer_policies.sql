@@ -1,5 +1,8 @@
 {{ config(materialized='table') }}
--- {{ config(materialized='incremental') }}
+-- {{ config(
+--     materialized='incremental'
+--     , unique_key='SYS_RECORD_CHECKSUM'
+-- ) }}
 
 with cte_customer_policies as (
     select
@@ -17,7 +20,7 @@ with cte_customer_policies as (
         bind_to_cancel_days,
         days_until_to_next_event,
         days_since_last_event
-    from {{ ref('vw_fact_customer_policies') }}
+    from {{ ref('vw_fact_customer_policies') }} cte
 )
 
 select 
