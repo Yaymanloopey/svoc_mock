@@ -1,0 +1,13 @@
+dbt_svop_mock:
+  target: test
+  outputs:
+    test:
+      type: bigquery
+      method: service-account
+      keyfile: C:\Users\Peter Duong\Desktop\learning\PythonProjects\SVoP_Mock\peters-datasets-ae48a1919c23.json
+      project: peters-datasets
+      dataset: dbt_svop_mock_schema
+      threads: 2
+      timeout_seconds: 300
+      location: us-central1
+      priority: interactive
