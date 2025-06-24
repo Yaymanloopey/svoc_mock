@@ -143,3 +143,14 @@ with cte_min_bind as(
 
 SELECT count(distinct policy_id) policies_with_multiple_quotes_before_bind
 FROM cte_before_bind
+
+-- EVENTS OVER TIME
+select
+  event_date
+  , count(case when event_type = 'Quote' then 1 end) quote_count
+  , count(case when event_type = 'Cancel' then 1 end) cancel_count
+  , count(case when event_type = 'Bind' then 1 end) bind_count
+from peters-datasets.dbt_svop_mock_schema_presentation.fact_customer_policies
+group by 1
+order by 1
+;

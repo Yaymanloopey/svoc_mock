@@ -7,7 +7,20 @@ with cte_customer_policies as (
         , channel
         , premium_amount
         , state
-    from {{ ref('policy_events') }}
+        /*
+            creating sys_attributes
+        */
+        , to_hex(md5(concat(
+            COALESCE(CAST(CTE.policy_id AS STRING),''),'||',
+            COALESCE(CAST(CTE.event_type AS STRING),''),'||',
+            COALESCE(CAST(CTE.event_date AS STRING),''),'||',
+            COALESCE(CAST(CTE.customer_id AS STRING),''),'||',
+            COALESCE(CAST(CTE.channel AS STRING),''),'||',
+            COALESCE(CAST(CTE.premium_amount AS STRING),''),'||',
+            COALESCE(CAST(CTE.state AS STRING),''),'||'
+        ))) sys_record_checksum
+        , current_datetime('Australia/Sydney') sys_insert_datetime
+    from {{ ref('policy_events') }} cte
 )
 /*
     for each policy, identifying the minimum date for each event
@@ -58,6 +71,8 @@ select distinct
     */
     , DATE_DIFF(LEAD(event_date) over (partition by cp.policy_id order by event_date), event_date, DAY) days_until_to_next_event
     , DATE_DIFF(event_date,LAG(event_date) over (partition by cp.policy_id order by event_date), DAY) days_since_last_event
+    , cp.sys_record_checksum
+    , cp.sys_insert_datetime
 from cte_customer_policies cp
 left join cte_first_event_date fed_q
     on cp.policy_id = fed_q.policy_id

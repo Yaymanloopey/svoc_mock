@@ -1,8 +1,8 @@
-{{ config(materialized='table') }}
--- {{ config(
---     materialized='incremental'
---     , unique_key='SYS_RECORD_CHECKSUM'
--- ) }}
+-- {{ config(materialized='table') }}
+{{ config(
+    materialized='incremental',
+    unique_key='sys_record_checksum'
+) }}
 
 with cte_customer_policies as (
     select
@@ -19,7 +19,9 @@ with cte_customer_policies as (
         quote_to_bind_days,
         bind_to_cancel_days,
         days_until_to_next_event,
-        days_since_last_event
+        days_since_last_event,
+        sys_record_checksum,
+        sys_insert_datetime
     from {{ ref('vw_fact_customer_policies') }} cte
 )
 
@@ -37,6 +39,8 @@ select
         quote_to_bind_days,
         bind_to_cancel_days,
         days_until_to_next_event,
-        days_since_last_event
+        days_since_last_event,
+        sys_record_checksum,
+        sys_insert_datetime
 from cte_customer_policies
 

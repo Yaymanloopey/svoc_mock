@@ -1,5 +1,8 @@
-{{ config(materialized='table') }}
--- {{ config(materialized='incremental') }}
+-- {{ config(materialized='table') }}
+{{ config(
+    materialized='incremental',
+    unique_key='sys_record_checksum'
+) }}
 
 with cte_customer as (
     select
@@ -10,9 +13,10 @@ with cte_customer as (
         , first_seen_date
         , last_seen_date
         , last_seen_state
-    from {{ ref('vw_dim_customer') }}
+        , sys_record_checksum
+        , sys_insert_datetime
+    from {{ ref('vw_dim_customer') }} cte
 )
 
 select *
 from cte_customer
-
