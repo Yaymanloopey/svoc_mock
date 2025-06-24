@@ -7,9 +7,13 @@ with cte_customer as (
     select
         customer_id
         , min(event_date) as first_seen_date
-        , max(event_date) as last_seen_date 
-        , null customer_first_name
+        , max(event_date) as last_seen_date
+        -- placeholder attributes to enrich later 
+        , null customer_first_name 
         , null customer_last_name
+        /*
+            creating sys_attributes
+        */
         , to_hex(md5(concat(
             COALESCE(CAST(CTE.customer_id AS STRING),''),'||'
         ))) sys_record_checksum

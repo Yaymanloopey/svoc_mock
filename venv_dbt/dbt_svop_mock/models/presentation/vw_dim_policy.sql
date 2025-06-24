@@ -8,6 +8,9 @@ with cte_policy as (
         policy_id
         , min(event_date) as first_event_date
         , max(event_date) as last_event_date 
+        /*
+            creating sys_attributes
+        */
         , to_hex(md5(concat(
             COALESCE(CAST(CTE.customer_id AS STRING),''),'||'
         ))) sys_record_checksum
